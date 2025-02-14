@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Asistencia</title>
+    <script>
+      function obtenerUbicacion() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            enviaFormulario,
+            mostrarError,
+          )
+        } else {
+          alert("Geolocalización no soportada en este navegador.")
+        }
+      }
+
+      function enviaFormulario(position) {
+        var lat = position.coords.latitude
+        var lng = position.coords.longitude
+        var latPermitida = -2.150370910294768 // CAMBIA ESTO por la latitud permitida
+        var lngPermitida = -79.59800536056991 // CAMBIA ESTO por la longitud permitida
+        var rangoPermitido = 0.01 // Margen de error en grados
+
+        if (
+          Math.abs(lat - latPermitida) <= rangoPermitido &&
+          Math.abs(lng - lngPermitida) <= rangoPermitido
+        ) {
+          // Genera el enlace con la ubicación incluida en el formulario
+          var urlFormulario =
+            "https://docs.google.com/forms/d/e/1FAIpQLSflWpJMgecXmLBlSgaAUpkqgi9nYQlh66kfbKOkRSOQzokkKQ/viewform?usp=header" +
+            lat +
+            "," +
+            lng
+          window.location.href = urlFormulario
+        } else {
+          alert("Estás fuera de la ubicación permitida.")
+        }
+      }
+
+      function mostrarError(error) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert("Debes permitir el acceso a la ubicación.")
+            break
+          case error.POSITION_UNAVAILABLE:
+            alert("Ubicación no disponible.")
+            break
+          case error.TIMEOUT:
+            alert("Tiempo de espera agotado.")
+            break
+          case error.UNKNOWN_ERROR:
+            alert("Error desconocido.")
+            break
+        }
+      }
+    </script>
+  </head>
+  <body onload="obtenerUbicacion()">
+    <h2>Registrando Asistencia...</h2>
+  </body>
+</html>
